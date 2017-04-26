@@ -22,7 +22,7 @@ colors = ["#00be00", "#00c9ff", "#dc8200", "#fc65ff", "#993a03", "#00734a", "#9e
 
 def get_data():
     cwdir = os.path.dirname(os.path.realpath(__file__))
-    files = glob.glob(cwdir + "/*.txt")
+    files = glob.glob(cwdir + "/data/*.txt")
     # read as pandas dataframe
     frames = []
     for f in files:

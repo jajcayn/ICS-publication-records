@@ -36,7 +36,7 @@ to_remove = [n for n in degree_dist_wei if degree_dist_wei[n] <= 1.]
 g.remove_nodes_from(to_remove)
 
 # export to gephi - uncomment if needed
-# nx.write_gexf(g, 'UI-cit-network-self-loops.gexf')
+# nx.write_gexf(g, 'gephi - graph visualization/UI-cit-network-self-loops.gexf')
 
 # graph stats
 degree_dist_bin = g.degree()
