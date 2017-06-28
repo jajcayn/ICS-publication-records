@@ -18,7 +18,7 @@ def plot_year_time_series(years, to_plot, ylabel = None, xlabel = None, legend =
         for plot, year, col in zip(to_plot, years, colors):
             plt.plot(year, plot, linewidth = 3.5, color = col)
     else:
-        plt.plot(years, to_plot, linewidth = 3.5, color = "#dc8200")
+        plt.plot(years, to_plot, linewidth = 3.5, color = colors[4])
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
     plt.gca().spines['left'].set_visible(False)
