@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     df = get_data()
     print df.columns
-    # print df
+    print df
 
 
     # pub no.
