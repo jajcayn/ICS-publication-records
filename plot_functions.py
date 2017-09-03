@@ -15,10 +15,10 @@ def plot_year_time_series(years, to_plot, ylabel = None, xlabel = None, legend =
 
     plt.figure(figsize = (13,7))
     if isinstance(to_plot, list) and len(to_plot) >= 2:
-        for plot, year, col in zip(to_plot, years, colors):
-            plt.plot(year, plot, linewidth = 3.5, color = col)
+        for plot, col in zip(to_plot, colors):
+            plt.plot(years, plot, linewidth = 3.5, color = col)
     else:
-        plt.plot(years, to_plot, linewidth = 3.5, color = colors[4])
+        plt.plot(years, to_plot, linewidth = 3.5, color = colors[3])
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
     plt.gca().spines['left'].set_visible(False)
@@ -29,7 +29,7 @@ def plot_year_time_series(years, to_plot, ylabel = None, xlabel = None, legend =
         plt.xlabel(xlabel, size = 27)
     if ylabel is not None:
         plt.ylabel(ylabel, size = 27, style = "italic")
-    plt.xlim([1950, 2020])
+    plt.xlim([1975, 2020])
     plt.gca().xaxis.set_major_locator(MultipleLocator(10))
     plt.gca().xaxis.set_minor_locator(MultipleLocator(2))
     if legend is not None:

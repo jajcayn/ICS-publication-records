@@ -42,7 +42,7 @@ def read(raw):
 
 def get(request_xml):
     req = urllib2.Request(AMR_URL, request_xml)
-    req.add_header('Content Type', 'application/xml')
+    # req.add_header('Content Type', 'application/xml') # sometimes needs to be uncommented, sometimes throws an error
     response = urllib2.urlopen(req)
     text = response.read()
     # parse into xml

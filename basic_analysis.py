@@ -18,6 +18,19 @@ mpl.rcParams['font.family'] = 'serif'
 
 colors = ["#00be00", "#00c9ff", "#dc8200", "#fc65ff", "#993a03", "#00734a", "#9e46a8", "#32587c"]
 
+changed_names = {
+    'Rexová' : 'Martinková',
+    'Hlaváčková' : 'Hlaváčková-Schindler',
+    'Honzíková' : 'Haniková',
+    'Ulrychová' : 'Hnětynková',
+    'Kůrková-Pohlová' : 'Kůrková',
+    'Pohlová' : 'Kůrková',
+    'Šidlofová' : 'Šámalová',
+    'Kyloušková' : 'Pavlíková',
+    'Drkošová' : 'Liczki',
+    'Kudová' : 'Vidnerová'
+}
+
 
 def get_data():
     cwdir = os.path.dirname(os.path.realpath(__file__))
@@ -36,6 +49,22 @@ def get_data():
     # parse authors as list
     for idx, row in df.iterrows():
         df.set_value(idx, 'AutořiAV', str(df.at[idx, 'AutořiAV']).split(" - "))
+        # drop rows where authors are NaN
+        if 'nan' in df.at[idx, 'AutořiAV']:
+            df = df.drop(df.index[idx])
+            continue
+        # look for changes in name, after marriage
+        auths = []
+        for n in df.at[idx, 'AutořiAV']:
+            surr, name = n.split(",")
+            if surr in changed_names:
+                n = changed_names[surr] + "," + name
+            auths.append(n)
+        df.set_value(idx, 'AutořiAV', auths)
+
+    # limit for publications AFTER 1976 and before 2017
+    df = df[df['RokVydání'] >= 1976]
+    df = df[df['RokVydání'] <= 2016]
 
     return df
 
@@ -51,9 +80,8 @@ def pie_values_not_percents(vals):
 if __name__ == "__main__":
 
     df = get_data()
+    print len(df)
     print df.columns
-    print df
-
 
     # pub no.
     # pd Series with index as year, value as cnt of publications
@@ -61,9 +89,8 @@ if __name__ == "__main__":
     aut_per_years = df.groupby(['RokVydání'])['AutořiAV'].sum().values
     aut_per_years = [len(list(set(i))) for i in aut_per_years]
     pf.plot_year_time_series(cnt_years.index, [cnt_years.values, aut_per_years], ylabel = None, legend = ['pub count', 'unique authors'],
-        fname = "yearly_pub_count.eps")
+        fname = "figs/yearly_pub_count.eps") # renders figure to eps file
     print sts.pearsonr(aut_per_years, cnt_years.values)
-
 
 
     # language
@@ -79,7 +106,7 @@ if __name__ == "__main__":
     plt.pie(overall_cnt_type.values, explode = (0, 0, 0.05, 0.1, 0.2, 0.4, 0.65), labels = overall_cnt_type.index, 
         autopct = pie_values_not_percents(overall_cnt_type.values), colors = colors[:len(overall_cnt_type)])
     plt.gca().axis('equal')
-    plt.savefig("type-pie-chart.eps", bbox_inches = 'tight')
+    plt.savefig("figs/type-pie-chart.eps", bbox_inches = 'tight')
     yearly_type = df.groupby([ 'RokVydání', 'ZpZveřejnění']).size()
     cumsum = yearly_type.cumsum(0)
 
@@ -88,11 +115,11 @@ if __name__ == "__main__":
     mean_if = df['ImpFaktor'].mean()
     median_if = df['ImpFaktor'].median()
     max_if = df['ImpFaktor'].max()
-    pf.histogram(df['ImpFaktor'].dropna(), bins = 50, fname = "IF-hist.eps")
+    pf.histogram(df['ImpFaktor'].dropna(), bins = 50, fname = "figs/IF-hist.eps")
     print mean_if, max_if, median_if
     print df.loc[df['ImpFaktor'] == max_if]['BiblCit']
     yearly_mean = df.groupby(['RokVydání'])['ImpFaktor'].mean()
-    print yearly_mean
+    # print yearly_mean
     
 
     # field
@@ -105,8 +132,8 @@ if __name__ == "__main__":
     plt.pie(list(cnt_fieldRIV.values) + [others], explode = explode, labels = list(cnt_fieldRIV.index) + ['others'], 
         autopct = pie_values_not_percents(cnt_fieldRIV.values), colors = colors[:len(cnt_fieldRIV)+1])
     plt.gca().axis('equal')
-    plt.savefig("RIV-field-pie-chart.eps", bbox_inches = 'tight')
-    # plt.show()
+    plt.savefig("figs/RIV-field-pie-chart.eps", bbox_inches = 'tight')
+    # # plt.show()
 
     # keywords - WORDCLOUD
     d = enchant.Dict("en_US")
@@ -119,7 +146,7 @@ if __name__ == "__main__":
                 if d.check(w):
                     keywords.append(w)
 
-    # TODO font to match poster font
+    # change path to font
     wordcloud = WordCloud(background_color = None, max_font_size = 90, margin = 15, normalize_plurals = True, 
         relative_scaling = 1., colormap = plt.get_cmap('cool'), mode = 'RGBA', width = 1500, height = 750, 
         font_step = 5, font_path = '/Users/nikola/Library/Fonts/Courier New.ttf').generate(' '.join(keywords))

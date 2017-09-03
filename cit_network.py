@@ -14,7 +14,6 @@ no_unique_authors = len(a)
 
 adj_matrix = np.zeros((no_unique_authors, no_unique_authors))
 
-
 for paper_auth in df['AutořiAV']:
     # cross authors
     if len(paper_auth) > 1:
@@ -36,7 +35,7 @@ to_remove = [n for n in degree_dist_wei if degree_dist_wei[n] <= 1.]
 g.remove_nodes_from(to_remove)
 
 # export to gephi - uncomment if needed
-# nx.write_gexf(g, 'gephi - graph visualization/UI-cit-network-self-loops.gexf')
+nx.write_gexf(g, 'gephi - graph visualization/UI-cit-network-self-loops.gexf')
 
 # graph stats
 degree_dist_bin = g.degree()
@@ -46,8 +45,8 @@ print "edges: ", g.number_of_edges()
 print "density: ", nx.density(g)*100
 print "bin. degree: ", np.mean(degree_dist_bin.values())
 print "wei. degree: ", np.mean(degree_dist_wei.values())
-print "# connected components: ", nx.number_connected_components(g) # 25 gephi
-print "# triangles: ", np.sum(nx.triangles(g).values())//3 # 1643
-print "avg. clustering: ", nx.average_clustering(g)
+print "# connected components: ", nx.number_connected_components(g) # 22 gephi
+print "# triangles: ", np.sum(nx.triangles(g).values())//3 # 1620 gephi
+print "avg. clustering: ", nx.average_clustering(g) # 0.74
 Gc = max(nx.connected_component_subgraphs(g), key=len)
 print "char. path length [of largest connected component]: ", nx.average_shortest_path_length(Gc)
